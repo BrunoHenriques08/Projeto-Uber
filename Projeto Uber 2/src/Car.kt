@@ -1,3 +1,3 @@
-class Car (var make: String, var model: String, var color: String, driver: Driver, run: Run, localization: Localization) {
+class Car (var make: String, var model: String, var color: String, var driver: Driver?,var run: Run?, var localization: Localization) {
 
 }

@@ -1,3 +1,3 @@
-class Driver (var name: String, var drivingLicense: String, car: Car, run: Run) {
+class Driver (var name: String, var drivingLicense: String, var car: Car?, var run: Run?) {
 
 }

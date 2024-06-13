@@ -1,3 +1,3 @@
-class Client (var name: String, var priority: Int, run: Run, localization: Localization) {
+class Client (var name: String, var priority: Int, var run: Run?, var localization: Localization) {
 
 }

@@ -23,10 +23,9 @@ fun Application.configureRouting() {
             if (validateLogin(loginRequest)) {
                 println("Login bem-sucedido para usuário: $username")
                 when (username) {
-                    "admin" -> call.respondRedirect("/admin")
                     "client" -> call.respondRedirect("/client")
                     "driver" -> call.respondRedirect("/driver")
-                    else -> call.respondText("Usuário não tem permissões para acessar.")
+                    else -> call.respondText("Utilizador não tem permissões para aceder.")
                 }
             } else {
                 println("Credenciais inválidas para usuário: $username")

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client</title>
+
+    <style>
+        body {
+            background-color: #2c2c2c;
+        }
+
+        .main {
+
+            width: 50%;
+            position: relative;
+            text-align: center;
+            margin: auto;
+            padding: 5% 0;
+        }
+
+        .container, condutores {
+            border: 2px solid grey;
+            width: 50%;
+            position: relative;
+            text-align: left;
+            margin: auto;
+            padding: 5% 0;
+            margin-top: 15px;
+        }
+
+        label {
+            margin-left: 15px;
+        }
+
+        .input {
+            color: white;
+            border: 2px solid #57b846;
+            border-radius: 10px;
+            padding: 10px 25px;
+            background: transparent;
+            max-width: 190px;
+        }
+
+        .input:active {
+            box-shadow: 2px 2px 15px #57b846 inset;
+        }
+
+        button {
+            color: white;
+            background-color: #57b846;
+            border: none;
+            border-radius: 7px;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            font-weight: bold;
+            margin-left: 15px;
+            cursor: pointer;
+            margin-top: 20px;
+
+        }
+
+        button:hover {
+            /* background-color: #529c45; */
+            box-shadow: 0px 0px 5px #7ac96c;
+        }
+
+        .txt1 {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .txt2 {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .arrow {
+            border: solid white;
+            border-width: 0 7px 7px 0;
+            display: inline-block;
+            padding: 10px;
+            transform: rotate(135deg);
+            -webkit-transform: rotate(135deg);
+        }
+        .divarrow{
+            text-align: left;
+            margin-left: 30px;
+        }
+        .divarrowleft{
+            border: 3px solid white;
+            width: 30px;
+            text-align: right;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        #adicionarCondutores{
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div class="divarrow">
+            <div class="divarrowleft" onclick="window.location.href='/'">
+                <i class="arrow"></i>
+            </div>
+        </div>
+
+        <span class="txt1">Escolha o local de partida e o destino: </span>
+        <div class="container">
+            <form id="loginForm" method="post" action="/client">
+                <label class="txt2" for="latpartida">Latitude de partida:</label>
+                <input class="input" type="text" name="latpartida" placeholder="Lat partida" id="latpartida"
+                    style="margin-left: 16px">
+                <br>
+                <br>
+                <label class="txt2" for="longpartida">Longitude de partida:</label>
+                <input class="input" type="text" name="longpartida" placeholder="Long partida" id="longpartida"
+                    style="margin-left: 2px">
+                <br>
+                <br>
+                <label style="color: white;">Exemplo: Lat: 40.838 |Long: -8.479</label>
+                <br>
+                <br>
+                <label class="txt2" for="latdestino">Latitude do destino: </label>
+                <input class="input" type="text" name="latdestino" placeholder="Lat destino" id="latdestino"
+                    style="margin-left: 14px">
+                <br>
+                <br>
+                <label class="txt2" for="longdestino">Longitude do destino: </label>
+                <input class="input" type="text" name="longdestino" placeholder="Long destino" id="longdestino">
+                <br>
+                <br>
+                <center>
+                    <button type="submit" onclick="atualizarDiv()">
+                        Procurar condutores
+                    </button>
+                </center>
+
+            </form>
+        </div>
+
+        <div class="condutores">
+            <p id="adicionarCondutores">
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const latpartida = document.getElementById('latpartida').value;
+            const longpartida = document.getElementById('longpartida').value;
+            const latdestino = document.getElementById('latdestino').value;
+            const longdestino = document.getElementById('longdestino').value;
+
+
+            const formData = new URLSearchParams();
+            formData.append('latpartida', latpartida);
+            formData.append('longpartida', longpartida);
+            formData.append('latdestino', latdestino);
+            formData.append('longdestino', longdestino);
+
+
+            const response = await fetch('/client', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formData.toString(),
+                redirect: 'follow'
+            });
+
+            if (response.ok) {
+                console.log('Geographic data sent sucessfully! :)');
+                window.location.href = response.url;
+            } else {
+                alert('Insert data in the fields');
+
+                function atualizarDiv() {
+                    fetch('/conteudo-div')  // Rota no Ktor para obter o conteúdo dinâmico
+                        .then(response => response.text())
+                        .then(data => {
+                            document.getElementById('adicionarCondutores').innerHTML = data;
+                        })
+                        .catch(error => console.error('Erro ao obter conteúdo:', error));
+                }
+            }
+        });
+
+
+
+    </script>
+</body>
+
+</html>

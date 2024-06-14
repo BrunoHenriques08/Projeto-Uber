@@ -29,16 +29,46 @@
             attribution: 'Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-
+        // Iniciar rota inicial (exemplo estático)
         var route1 = L.Routing.control({
             waypoints: [
-                L.latLng(40.838, -8.479), // Pegar nas coordenadas do condutor
-                L.latLng(40.848053, -8.399766) // Pegar nas coordenadas do cliente
+                L.latLng(40.838, -8.479), // Coordenadas do condutor (exemplo estático)
+                L.latLng(40.848053, -8.399766) // Coordenadas do cliente (exemplo estático)
             ]
         }).addTo(map).on('routesfound', function (e) {
             var route = e.routes[0];
             console.log('Distância da rota: ' + route.summary.totalDistance + ' metros.');
         });
+
+        // Função para atualizar a rota com coordenadas dinâmicas
+        function atualizarRota(condutorCoordenadas, clienteCoordenadas) {
+            // Remover a rota atual (se existir)
+            if (route1) {
+                map.removeControl(route1);
+            }
+
+            // Adicionar a nova rota com as coordenadas atualizadas
+            route1 = L.Routing.control({
+                waypoints: [
+                    L.latLng(condutorCoordenadas),
+                    L.latLng(clienteCoordenadas)
+                ]
+            }).addTo(map);
+        }
+
+        // Função para buscar coordenadas dinâmicas via AJAX
+        function buscarCoordenadas() {
+            fetch('/coordenadas')  // Rota no servidor Ktor que fornece coordenadas
+                .then(response => response.json())
+                .then(data => {
+                    // Atualizar a rota com as coordenadas obtidas
+                    atualizarRota(data.condutor, data.cliente);
+                })
+                .catch(error => console.error('Erro ao obter coordenadas:', error));
+        }
+
+        // Chamar a função para buscar coordenadas ao carregar a página (opcional)
+        buscarCoordenadas();
     </script>
 </body>
 
